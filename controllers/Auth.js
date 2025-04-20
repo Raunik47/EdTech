@@ -62,6 +62,69 @@ exports.sendOTP = async (requestAnimationFrame, res) => {
         
     }
  
-
   
 };
+
+// signup
+exports.signUp= async(res,req) =>{
+
+  // data fetch from body
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+    accountType,
+    contactNumber,
+    otp
+  }=req.body;
+  // validate check
+  if(!firstName || !lastName || !email || !password || !confirmPassword || !top ){
+    return res.status(403).json ({
+      success:false,
+      message: "All field are required"
+    })
+  }
+  // 2 password match karlo 
+  if(password !== confirmPassword) {
+    return res.status(400).json ({
+      success:false,
+      message: "password and the confirmpassword does not match"
+    });
+  }
+  // check user already exist 
+  const existingUser = await User.findOne({email});
+  if(existingUser){
+    return res.status(400).json ({
+      success:false,
+      message: "User is already registerd"
+    });
+  }
+
+  // find most recent OTP stored for the user
+
+  const recentOtp = await OTP.find({email}).sort({createAt :-1}).limit(1);
+  console.log(recentOtp);
+
+  // validate OTP
+if(recentOtp.length == 0){
+  // otp not found
+return res.status(400).json({
+  success:false,
+  message:"OTP found",
+})
+} 
+else if(otp !== recentOtp.otp){
+  // invalid OTP
+  return res.status(400).json({
+    success:false,
+    message:"OTP found",
+  });
+}
+
+// hash password
+const hashedPassword =await bcrypt.hash(password,10);
+
+// entry create in DB
+}
