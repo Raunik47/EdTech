@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const OTP = require("../models/User");
+const otpGenerator = require("otp-generator");
+const bcrypt = require("bcrypt");
 
 // send otp
 exports.sendOTP = async (requestAnimationFrame, res) => {
@@ -163,4 +165,17 @@ exports.signUp = async (res, req) => {
         message: "User cannot be registered . please try again",
       });
   }
+
+  // login code
+
+  exports.login = async (req, res) => {
+    try {
+      // get data from req body
+      const {email,password} =req.body;
+      // validation
+      // /user check exist or not
+      // generate jwt ,after password maytching
+      // create cookie and sw d response
+    } catch (error) {}
+  };
 };
