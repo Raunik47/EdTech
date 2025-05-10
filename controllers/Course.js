@@ -1,5 +1,5 @@
 const Course = require("../models/Course");
-const Tag = require("../models/Tags");
+const Tag = require("../models/Category");
 const User = require("../models/User");
 
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
@@ -28,7 +28,7 @@ exports.createCourse = async (req, res) => {
       !whatYouWillLearn ||
       !price ||
       !tag ||
-      thumbnail
+      !thumbnail
     ) {
       return res.status(400).json({
         success: false,
@@ -86,8 +86,19 @@ exports.createCourse = async (req, res) => {
       { new: true }
     );
 
-    // update the Tag Schema krna hai isko khud se
+    // update the Tag Schema same as user schema 
 
+    await Tag.findByIdAndUpdate(
+     { _id:tagDetails._id},
+     {
+      $push :{
+        course: newCourse._id,
+      }
+     },
+     {new:true}
+
+    )
+  
     // return response
     return res.status(200).json({
       success: true,
@@ -107,6 +118,7 @@ exports.createCourse = async (req, res) => {
 
 exports.showAllCourses = async (req, res) => {
   try {
+    // todo:change the below statemenent
     const allCourses = await Course.find(
       {},
       {
