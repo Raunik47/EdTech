@@ -69,3 +69,64 @@ exports.createRating = async (req, res) => {
     });
   }
 };
+
+
+
+
+// Get Average Rating for a Course
+exports.getAverageRating = async (req, res) => {
+    try {
+        // 1. Get course ID from request body
+        const courseId = req.body.courseId;
+
+        // 2. Validate course ID
+        if (!courseId) {
+            return res.status(400).json({
+                success: false,
+                message: "Course ID is required",
+            });
+        }
+
+        // 3. Calculate average rating using MongoDB aggregation
+        const result = await RatingAndReview.aggregate([
+            {
+                // Stage 1: Match reviews for this specific course
+                $match: {
+                    course: new mongoose.Types.ObjectId(courseId), // Corrected from Types_ObjectId
+                },
+            },
+            {
+                // Stage 2: Group all matching reviews to calculate average
+                $group: {
+                    _id: null, // Group all documents together
+                    averageRating: { $avg: "$rating" }, // Calculate average of 'rating' field
+                },
+            },
+        ]);
+
+        // 4. Return the result
+        if (result.length > 0) {
+            return res.status(200).json({
+                success: true, // Corrected from 'successful'
+                averageRating: result[0].averageRating,
+            });
+        }
+
+        // 5. If no ratings exist for this course
+        return res.status(200).json({
+            success: true,
+            message: "Average Rating is 0, no ratings given yet",
+            averageRating: 0,
+        });
+
+    } catch (error) {
+        console.error("Error calculating average rating:", error);
+        return res.status(500).json({
+            success: false, // Corrected from 'successful'
+            message: "Failed to calculate average rating",
+            error: error.message,
+        });
+    }
+};
+
+
