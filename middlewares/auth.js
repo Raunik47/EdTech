@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const User = require("../");
+const User = require("../models/User");
 
 // auth
 exports.auth = async (req, res, next) => {
@@ -26,7 +26,7 @@ exports.auth = async (req, res, next) => {
       console.log(decode);
       req.user = decode;
     } catch (error) {
-      // verification issue
+     
       // if verification issue occur then
       return res.status(401).json({
         success: false,

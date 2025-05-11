@@ -1,6 +1,6 @@
 const User = require("../models/User");
-const OTP = require("../models/OTP"); 
-const Profile = require("../models/Profile"); 
+const OTP = require("../models/OTP");
+const Profile = require("../models/Profile");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); // You forgot to import JWT
@@ -72,7 +72,14 @@ exports.signUp = async (req, res) => {
       otp,
     } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !otp
+    ) {
       return res.status(403).json({
         success: false,
         message: "All fields are required",
@@ -94,7 +101,9 @@ exports.signUp = async (req, res) => {
       });
     }
 
-    const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+    const recentOtp = await OTP.find({ email })
+      .sort({ createdAt: -1 })
+      .limit(1);
 
     if (recentOtp.length === 0) {
       return res.status(400).json({
@@ -165,7 +174,7 @@ exports.login = async (req, res) => {
       const payload = {
         email: user.email,
         id: user._id,
-        role: user.accountType,
+        accountType: user.accountType,
       };
 
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -197,6 +206,57 @@ exports.login = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Login failure, please try again",
+    });
+  }
+};
+
+// change password
+exports.changePassword = async (req, res) => {
+  try {
+    // get data from req body
+    const { newPassword, confirmPassword } = req.body;
+    // get oldPassword ,newpassword,confirmPassword
+    // validation
+
+    // if(!newPassword==confirmPassword) this is wrong logic
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "new password not  matched",
+      });
+    }
+
+    // update password in db
+    // "After new password and confirm password match, how should we think about updating it in the DB?"
+
+    // Who are we updating?
+    const userID = req.user._id;
+
+    // Find the user from the database.
+    const user = await User.findbyId(userID);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    // Step 3: Hash the new password before saving
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Save the new password into the database
+    user.password = hashedPassword;
+    await user.save();
+
+    // send mail -password
+    // return response
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
     });
   }
 };

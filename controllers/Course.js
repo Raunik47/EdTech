@@ -1,7 +1,7 @@
 const Course = require("../models/Course");
 const Tag = require("../models/Category");
 const User = require("../models/User");
-
+require("dotenv").config();
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 //  createCourse handler function
@@ -49,8 +49,9 @@ exports.createCourse = async (req, res) => {
         message: "Instructor Details not found",
       });
     }
-    // check the tag given is valid or not
+      //  bring the detail of tag in the tagdetail variable by using id i.e tag
     const tagDetails = await Tag.findById(tag);
+    // check the tag given is valid or not
     if (!tagDetails) {
       return res.status(404).json({
         success: false,
@@ -143,6 +144,58 @@ exports.showAllCourses = async (req, res) => {
       success: false,
       message: "Cannot fetch course data",
       error: error.message,
+    });
+  }
+};
+
+// getCAOURSEDetails it means we neend actual data
+
+// Controller to fetch complete course details
+exports.getCourseDetails = async (req, res) => {
+  try {
+    // STEP 1: Extract courseId from request body
+    const { courseId } = req.body;
+
+    // STEP 2: Fetch course details from the database using courseId
+    // and populate related fields for full information
+    const courseDetails = await Course.findOne({ _id: courseId })
+      .populate({
+        path: "instructor", // populate instructor field
+        populate: {
+          path: "additionalDetails", // nested populate: fetch additional details of instructor
+        },
+      })
+      .populate("category") // populate category details
+      .populate("ratingAndreviews") // populate course reviews
+      .populate({
+        path: "courseContent", // populate course content
+        populate: {
+          path: "subSection", // nested populate: fetch all subsections of course content
+        },
+      })
+      .exec(); // execute the query
+
+    // STEP 3: Validation check — if course details not found
+    if (!courseDetails) {
+      return res.status(400).json({
+        success: false,
+        message: `Could not find the course with ID: ${courseId}`,
+      });
+    }
+
+    // STEP 4: Return successful response with course details
+    return res.status(200).json({
+      success: true,
+      message: "Course details fetched successfully",
+      data: courseDetails,
+    });
+
+  } catch (error) {
+    // STEP 5: Catch any unexpected errors and return 500
+    console.log("Error in getCourseDetails:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

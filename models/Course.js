@@ -34,15 +34,22 @@ const courseSchema = new mongoose.Schema({
   ],
   price: {
     type: Number,
-    required:true,
+    required: true,
   },
   thumbnail: {
     type: String,
   },
-  tag: {
-    type:mongoose.Schema.Types.ObjectId ,
-    ref :"Tag",
+
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
   },
+
+  Tags: {
+    type: String,
+    required:true
+  },
+
   StudentEnrolled: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -51,4 +58,4 @@ const courseSchema = new mongoose.Schema({
   ],
 });
 
-module.exports=mongoose.model("Course", courseSchema);
+module.exports = mongoose.model("Course", courseSchema);
