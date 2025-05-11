@@ -50,3 +50,66 @@ exports.showAllcategory = async (req, res) => {
     });
   }
 };
+
+// category page details handler function
+
+
+exports.categoryPageDetails = async (req, res) => {
+try {
+// Get categoryId from request body
+const { categoryId } = req.body;
+
+// Validate presence of categoryId
+if (!categoryId) {
+  return res.status(400).json({
+    success: false,
+    message: "Missing categoryId",
+  });
+}
+
+// Fetch selected category and its courses
+const selectedCategory = await Category.findById(categoryId)
+  .populate("courses")
+  .exec();
+
+// Validate selected category
+if (!selectedCategory) {
+  return res.status(404).json({
+    success: false,
+    message: "Category not found",
+  });
+}
+
+// Fetch courses from other categories (excluding selected category)
+const categoriesExceptSelected = await Category.find({
+  _id: { $ne: categoryId },
+}).populate("courses");
+
+// Collect all courses from other categories
+let differentCourses = [];
+for (const category of categoriesExceptSelected) {
+  differentCourses.push(...category.courses);
+}
+
+
+
+// Get top 10 selling courses across all categories
+const mostSellingCourses = allCourses
+  .sort((a, b) => b.sold - a.sold)
+  .slice(0, 10);
+
+// Return final response
+return res.status(200).json({
+  success: true,
+  selectedCourses: selectedCategory.courses,
+  differentCourses: differentCourses,
+  mostSellingCourses: mostSellingCourses,
+});
+} catch (error) {
+return res.status(500).json({
+success: false,
+message: "Internal server error",
+error: error.message,
+});
+}
+};
