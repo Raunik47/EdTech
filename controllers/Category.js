@@ -51,8 +51,9 @@ exports.showAllcategory = async (req, res) => {
   }
 };
 
-// category page details handler function
 
+
+// category page details handler function
 
 exports.categoryPageDetails = async (req, res) => {
 try {
