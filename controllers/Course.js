@@ -151,7 +151,7 @@ exports.showAllCourses = async (req, res) => {
 // getCAOURSEDetails it means we neend actual data
 
 // Controller to fetch complete course details
-exports.getCourseDetails = async (req, res) => {
+exports.getAllCourseDetails = async (req, res) => {
   try {
     // STEP 1: Extract courseId from request body
     const { courseId } = req.body;
