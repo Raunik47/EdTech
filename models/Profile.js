@@ -21,4 +21,4 @@ required:true,
     }
 
 })   
-module.profileSchema=mongoose.new('Profile',profileSchema); 
+module.profileSchema=mongoose.model('Profile',profileSchema); 
