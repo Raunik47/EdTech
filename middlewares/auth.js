@@ -43,6 +43,8 @@ exports.auth = async (req, res, next) => {
   }
 };
 
+
+
 // isStudent middleware
 exports.isStudent = async (req, res) => {
   try {
@@ -64,7 +66,11 @@ exports.isStudent = async (req, res) => {
   }
 };
 
-// 
+
+
+
+
+
 // isInstuctor middleware
 exports.isInstructor = async (req, res) => {
     try {
@@ -86,8 +92,13 @@ exports.isInstructor = async (req, res) => {
     }
   };
 
+
+
+
+
+  
 //   isAdmin
-// isStudent middleware
+
 exports.isAdmin = async (req, res) => {
     try {
       // acces the role from request or by 2nd method  by using account type  from the db
