@@ -44,7 +44,11 @@ const {
     isStudent,
     isInstructor,
     isAdmin 
-} = require("../MiddleWare/authMiddleWare");
+} = require("../middlewares/auth");
+
+console.log("ShowAllCategory:", showAllCategory);
+console.log("CreateCategory:", createCategory);
+console.log("CategoryPageDetails:", categoryPageDetails);
 
 // ********************************************************************************************************
 //                                      Course routes
