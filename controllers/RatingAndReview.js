@@ -1,3 +1,5 @@
+
+const mongoose = require("mongoose");
 const RatingAndReview = require("../models/RatingAndReview");
 const Course = require("../models/Course");
 
@@ -130,3 +132,35 @@ exports.getAverageRating = async (req, res) => {
 };
 
 
+// Get all ratings and reviews with sorting and population
+exports.getAllRatingAndReviews = async (req, res) => {
+    try {
+        // Fetch all reviews with sorting and population
+        const allReviews = await RatingAndReview.find({})
+            .sort({ rating: "desc" })  // Sort by rating in descending order
+            .populate({
+                path: "user",
+                select: "firstName lastName email image",  // Only include these user fields
+            })
+            .populate({
+                path: "course",
+                select: "courseName",  // Only include course name
+            })
+            .exec();  // Execute the query
+
+        // Return successful response with all reviews
+        return res.status(200).json({
+            success: true,  // Corrected from 'successortrue'
+            message: "All reviews fetched successfully",
+            data: allReviews,
+        });
+
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch reviews",
+            error: error.message,
+        });
+    }
+};

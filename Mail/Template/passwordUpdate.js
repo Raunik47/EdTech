@@ -73,3 +73,4 @@ exports.passwordUpdated = (email, name) => {
     
     </html>`;
 };
+
