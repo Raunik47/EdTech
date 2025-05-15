@@ -1,8 +1,8 @@
-const {instance}=require("../config/razorpay");
+const {instance}=require("../config/razorpayinstance");
 const Course=require("../models/Course");
 const User=require("../models/User");
 const mailSender=require("../utils/mailSender");
-const {courseEnrollmentEmail}=require("../mail/templates/courseEnrollmentEmail");
+const {courseEnrollmentEmail}=require("../Mail/Template/courseEnrollmentEmail");
 const mongoose=require("mongoose"); 
 const crypto=require("crypto");
 const {paymentSuccessEmail} =require("../mail/templates/paymentSuccessEmail");

@@ -130,7 +130,7 @@ const CourseProgress = require("../models/CourseProgress");
 const Profile=require("../models/Profile");
 const User=require("../models/User");
 const {uploadImageToCloudinary}=require("../utils/imageUploader");
-
+const {convertSecondsToDuration} =require("../utils/secToDuration");
 const Course=require("../models/Course")
 
 //Update Profile - No need to create since null fields already present
