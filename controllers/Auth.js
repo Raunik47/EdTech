@@ -9,9 +9,13 @@ require("dotenv").config();
 // sendOTP
 exports.sendOTP = async (req, res) => {
   try {
+    console.log("request",req.body);
+    
     const { email } = req.body;
+    console.log("email",email);
+    
 
-    const checkUserPresent = await User.findOne({ email });
+    const checkUserPresent = await User.findOne({ email:email });
 
     if (checkUserPresent) {
       return res.status(401).json({
@@ -44,7 +48,7 @@ exports.sendOTP = async (req, res) => {
 
     console.log(otpBody);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "OTP sent successfully",
       otp,
@@ -57,6 +61,8 @@ exports.sendOTP = async (req, res) => {
     });
   }
 };
+
+
 
 // signUp
 exports.signUp = async (req, res) => {

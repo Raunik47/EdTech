@@ -1,5 +1,5 @@
 const mongoose= require("mongoose");
-const { resetPasswordToken } = require("../controllers/ResetPassword");
+
 
 const userSchema= new mongoose.Schema({
 
@@ -8,14 +8,14 @@ const userSchema= new mongoose.Schema({
         required:true,
         trim: true,
     },
-    lastNmae: {
+    lastNamee: {
         type:String,
         required:true,
         trim:true,
     },
     email : {
         type:String,
-        require:true,
+        required:true,
         trim: true,
     },
     password : {
@@ -56,4 +56,4 @@ type:Date
 
 })
 
-module.export= mongoose.model ("User",userSchema);
+module.exports= mongoose.model ("User",userSchema);
