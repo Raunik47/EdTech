@@ -1,28 +1,18 @@
 const mongoose = require("mongoose");
-const SubSection = require("./SubSection");
-const Course= require("../models/Course")
 
+// Define the Section schema
 const sectionSchema = new mongoose.Schema({
-  sectionName: 
-    {
-      type: String,
-    },
-  
-   subSection:
-    {
-      type: mongoose.Schema.Types.ObjectId, 
-      required:true,
-      ref:"SubSection"
-    },
-
-
-    // ye wali maine khud se ki hai
-
-    course: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Course"
-}
-   
+	sectionName: {
+		type: String,
+	},
+	subSection: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: "SubSection",
+		},
+	],
 });
 
-module.exports = mongoose.model("Section",  sectionSchema );
+// Export the Section model
+module.exports = mongoose.model("Section", sectionSchema);

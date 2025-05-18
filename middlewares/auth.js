@@ -45,23 +45,57 @@ exports.auth = async (req, res, next) => {
 
 
 
+
 // isStudent middleware
-exports.isStudent = async (req, res) => {
+exports.isStudent = async (req, res, next) => {
   try {
-    // acces the role from request or by 2nd method  by using account type  from the db
     if (req.user.accountType !== "Student") {
-      // if account type not matched with student then return the respons issue occur then
       return res.status(401).json({
         success: false,
-        message: "this is not the protected route for the Student only",
+        message: "This is not the protected route for the Student only",
+      });
+    }
+    next(); //  Now it works
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "User role cannot be verified, please try again",
+    });
+  }
+};
+
+// isInstructor middleware
+exports.isInstructor = async (req, res, next) => {
+  try {
+    if (req.user.accountType !== "Instructor") {
+      return res.status(401).json({
+        success: false,
+        message: "This is not the protected route for the Instructor only",
       });
     }
     next();
   } catch (error) {
-    // if verification issue occur then
     return res.status(500).json({
       success: false,
-      message: "User role cannot be varified,plase try again",
+      message: "User role cannot be verified, please try again",
+    });
+  }
+};
+
+// isAdmin middleware
+exports.isAdmin = async (req, res, next) => {
+  try {
+    if (req.user.accountType !== "Admin") {
+      return res.status(401).json({
+        success: false,
+        message: "This is the protected route for the Admin only",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "User role cannot be verified, please try again",
     });
   }
 };
@@ -71,50 +105,4 @@ exports.isStudent = async (req, res) => {
 
 
 
-// isInstuctor middleware
-exports.isInstructor = async (req, res) => {
-    try {
-      // acces the role from request or by 2nd method  by using account type  from the db
-      if (req.user.accountType !== "Instructor") {
-        // if account type not matched with student then return the respons issue occur then
-        return res.status(401).json({
-          success: false,
-          message: "this is not the protected route for the Instructor only",
-        });
-      }
-      next();
-    } catch (error) {
-      // if verification issue occur then
-      return res.status(500).json({
-        success: false,
-        message: "User role cannot be varified,plase try again",
-      });
-    }
-  };
 
-
-
-
-
-  
-//   isAdmin
-
-exports.isAdmin = async (req, res) => {
-    try {
-      // acces the role from request or by 2nd method  by using account type  from the db
-      if (req.user.accountType !== "Admin") {
-        // if account type not matched with student then return the respons issue occur then
-        return res.status(401).json({
-          success: false,
-          message: "this is not the protected route for the admin only",
-        });
-      }
-      next();
-    } catch (error) {
-      // if verification issue occur then
-      return res.status(500).json({
-        success: false,
-        message: "User role cannot be varified,plase try again",
-      });
-    }
-  };
