@@ -9,7 +9,7 @@ require("dotenv").config();
 // sendOTP
 exports.sendOTP = async (req, res) => {
   try {
-    console.log("request",req.body);
+
     
     const { email } = req.body;
     console.log("email",email);
@@ -140,6 +140,7 @@ exports.signUp = async (req, res) => {
       contactNumber,
       accountType,
       additionalDetails: profileDetails._id,
+      image: req.body.imageUrl || "/defaults/avatar.png",
     });
 
     return res.status(200).json({
